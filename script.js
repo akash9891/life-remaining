@@ -540,20 +540,62 @@ $("share").addEventListener("click", async () => {
 });
 
 // ---------- install as app (PWA) ----------
+// Only Chromium browsers (Chrome / Edge / Samsung on Android, desktop Chrome)
+// fire beforeinstallprompt. iPhone Safari and Firefox never do, so on phones
+// the button always shows and falls back to step-by-step instructions.
 let installPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isTouch = matchMedia("(pointer: coarse)").matches;
+const isStandalone = () =>
+  matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+
+function updateInstallButton() {
+  // already running as the installed app: nothing to install
+  $("install").hidden = isStandalone() || !(installPrompt || isTouch);
+}
+
+function showInstallHelp() {
+  const shareIcon = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4l4 4M6 12v6a2 2 0 002 2h8a2 2 0 002-2v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const steps = isIOS
+    ? [
+        `Tap the <b>Share</b> button ${shareIcon} in the browser bar (bottom in Safari, top in Chrome).`,
+        `Scroll down and tap <b>Add to Home Screen</b>.`,
+        `Tap <b>Add</b>. It opens full-screen like an app.`
+      ]
+    : [
+        `Open the browser menu <b>⋮</b> (top-right in Chrome, bottom in Samsung Internet / Firefox).`,
+        `Tap <b>Install app</b> or <b>Add to Home screen</b>.`,
+        `Confirm. It opens full-screen like an app.`
+      ];
+  $("install-steps").innerHTML = steps.map((s) => `<li>${s}</li>`).join("");
+  $("install-help").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeInstallHelp() {
+  $("install-help").hidden = true;
+  document.body.style.overflow = "";
+}
+
 addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   installPrompt = e;
-  $("install").hidden = false;
+  updateInstallButton();
 });
 $("install").addEventListener("click", async () => {
-  if (!installPrompt) return;
+  if (!installPrompt) {
+    showInstallHelp();
+    return;
+  }
   installPrompt.prompt();
   await installPrompt.userChoice;
   installPrompt = null;
-  $("install").hidden = true;
+  updateInstallButton();
 });
+document.querySelectorAll("[data-close-install]").forEach((el) => el.addEventListener("click", closeInstallHelp));
 addEventListener("appinstalled", () => { $("install").hidden = true; });
+updateInstallButton();
 
 // The service worker only runs over http(s), i.e. once hosted, not from file://
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
@@ -788,6 +830,7 @@ document.addEventListener("click", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("install-help").hidden) closeInstallHelp();
   if (e.key === "Escape" && !$("modal").hidden) {
     if (!$("combo-panel").hidden) closeCombo();
     else closeModal();

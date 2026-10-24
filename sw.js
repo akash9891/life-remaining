@@ -1,7 +1,7 @@
 // Offline support for the installed app. Serves from cache straight away and
 // refreshes the cache in the background, so updates show on the next visit.
 // Bump CACHE when the list of files changes.
-const CACHE = "life-remaining-v2";
+const CACHE = "life-remaining-v3";
 const FILES = [
   "./",
   "index.html",

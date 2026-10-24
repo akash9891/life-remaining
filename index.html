@@ -107,6 +107,18 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <!-- How-to-install sheet, for browsers without a one-tap install (iPhone etc.) -->
+  <div class="modal" id="install-help" hidden>
+    <div class="modal-backdrop" data-close-install></div>
+    <div class="card" role="dialog" aria-modal="true" aria-labelledby="install-title">
+      <button class="card-close" type="button" data-close-install aria-label="Close">×</button>
+      <p class="eyebrow">We die · Live now</p>
+      <h2 class="card-title" id="install-title">Add to your home screen</h2>
+      <ol class="install-steps" id="install-steps"></ol>
+      <button type="button" class="btn-primary wide" data-close-install>Got it</button>
+    </div>
+  </div>
+
   <!-- Calculate-yours modal -->
   <div class="modal" id="modal" hidden>
     <div class="modal-backdrop" data-close></div>

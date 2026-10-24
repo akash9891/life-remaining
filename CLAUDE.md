@@ -132,7 +132,10 @@ Gender/sex is deliberately **not** collected.
 9. **Daily question**: **removed** (2026-10-24, user request). Do not re-add it.
 10. **Install as app (PWA)**:
     - the manifest, icons and service worker make it installable once hosted
-    - an install button appears in the top bar when the browser fires `beforeinstallprompt`
+    - **The install button always shows on phones** (`pointer: coarse`) unless already running as the installed app (`display-mode: standalone` / `navigator.standalone`):
+      - Chromium (Chrome / Edge / Samsung on Android), which fires `beforeinstallprompt`: tapping shows the native install popup
+      - iPhone (any browser), Firefox and others with no install event: tapping opens the `#install-help` sheet with platform steps (iOS: Share → Add to Home Screen; Android: menu ⋮ → Install app / Add to Home screen)
+      - Desktop: the button shows only when `beforeinstallprompt` fires
     - it works offline after the first visit
 11. **Rotating quotes**: Seneca, Marcus Aurelius and others, blurring in and out every 18 s. **Always visible on phone and desktop.**
 12. **Starfield background**: a canvas of slowly drifting, twinkling stars. Now and then one flares gold and fades out, like a life ending. There is also a breathing gold glow and a vignette.
@@ -170,7 +173,7 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - **Not verifiable headless:** the native share sheet and clipboard (no user activation), and service-worker caching. Check these on a real phone after hosting.
 
 ## Next
-- Host on GitHub Pages (user will do this next). After hosting, check that install, offline mode and the share URL all work.
+- **Live:** https://akash9891.github.io/life-remaining/ (GitHub Pages, deploys automatically from `main`). The share button is confirmed working on the user's phone. Chrome's installability check on the live site passes (no errors).
 - Optional later: an OG image for nicer link previews, a new-tab browser extension.
 
 ## Status
@@ -183,7 +186,8 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - [x] v4: life in weeks, share, daily question, tab title countdown, tick sound, PWA
 - [x] v5: mobile-first rework
 - [x] Tested in headless Chrome (2026-10-24): see Testing
-- [ ] Offline mode / install: verify on the hosted site (headless Chrome's cache storage failed in the test environment)
+- [x] Hosted on GitHub Pages; installability verified by Chrome on the live site
+- [ ] Offline mode: user to confirm on a real phone (airplane mode after first visit)
 - [ ] Hosting on GitHub Pages
 
 ## Changelog
@@ -211,3 +215,4 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - 2026-10-24: Daily question removed entirely (HTML, CSS, `QUESTIONS`/`showQuestion`). Quotes now always shown on phone and desktop (removed the rules that hid them under 640px tall and in phone Weeks view). Re-tested on 8 sizes x 2 views: all fit on one screen.
 - 2026-10-24: Phones now show every detail desktop shows. Removed the rule that hid the unit line, years lived/left and the meta line under 640px tall (most real phones are below that with browser bars). Short phones (<700px) compact instead; sideways phones keep those details too (`html`-prefixed rules so they beat the desktop media query). Tested at 360×560, 390×600, 360×640, 390×664, 412×780, 844×390 and 1366×768 in both views: all details visible, all fit on one screen.
 - 2026-10-24: Code pushed to GitHub (https://github.com/akash9891/life-remaining, branch `main`). Added README.md (features, verified data sources, privacy, run/deploy steps, structure).
+- 2026-10-24: Deployed to GitHub Pages (https://akash9891.github.io/life-remaining/). The install button wasn't visible on the user's phone because only Chromium fires `beforeinstallprompt`. The button now always shows on phones (hidden once installed) and falls back to a how-to sheet (`#install-help`) with iPhone / Android steps. `sw.js` CACHE bumped to v3. Tested with iPhone, Android-Firefox, Android-Chrome and desktop emulation.

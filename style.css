@@ -642,6 +642,44 @@ button { font: inherit; color: inherit; touch-action: manipulation; }
 
 form { display: flex; flex-direction: column; gap: 16px; }
 
+/* how-to-install steps */
+.install-steps {
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.install-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 40px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.install-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.install-steps b { color: var(--fg); font-weight: 500; }
+.install-steps svg { vertical-align: -3px; color: var(--gold); }
+
 .field > span {
   display: block;
   margin-bottom: 8px;
