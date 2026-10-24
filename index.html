@@ -6,9 +6,7 @@
   <title>Life Remaining</title>
   <meta name="description" content="We die. Live now. A countdown of the seconds of life you have left.">
   <meta name="theme-color" content="#05060a">
-  <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
@@ -22,9 +20,6 @@
   <header class="topbar">
     <span class="brand"><span class="brand-dot"></span>We die · Live now</span>
     <div class="top-actions">
-      <button class="icon-btn" id="install" type="button" title="Install as app" aria-label="Install as app" hidden>
-        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
       <button class="icon-btn" id="sound" type="button" title="Sound (music + ticks)" aria-label="Sound off" aria-pressed="false">
         <svg class="ic-off" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M17 9l4 6m0-6l-4 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         <svg class="ic-on" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -106,18 +101,6 @@
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
-  <!-- How-to-install sheet, for browsers without a one-tap install (iPhone etc.) -->
-  <div class="modal" id="install-help" hidden>
-    <div class="modal-backdrop" data-close-install></div>
-    <div class="card" role="dialog" aria-modal="true" aria-labelledby="install-title">
-      <button class="card-close" type="button" data-close-install aria-label="Close">×</button>
-      <p class="eyebrow">We die · Live now</p>
-      <h2 class="card-title" id="install-title">Add to your home screen</h2>
-      <ol class="install-steps" id="install-steps"></ol>
-      <button type="button" class="btn-primary wide" data-close-install>Got it</button>
-    </div>
-  </div>
 
   <!-- Calculate-yours modal -->
   <div class="modal" id="modal" hidden>

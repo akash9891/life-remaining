@@ -2,7 +2,7 @@
 
 > We die. Live now.
 
-Brand line used everywhere in the UI: **"We die · Live now"** (top bar, modal eyebrow, meta description, manifest). It replaced "Memento mori".
+Brand line used everywhere in the UI: **"We die · Live now"** (top bar, modal eyebrow, meta description). It replaced "Memento mori".
 
 ## ⚠️ Maintenance Rule (always follow)
 **Whenever any code, file, design, feature or decision in this project changes, this CLAUDE.md MUST be updated in the same change.**
@@ -26,18 +26,15 @@ It is a daily reminder that life is finite: hurry, and don't waste time on trivi
   - `life-remaining-custom`: the visitor's custom places
   - `life-remaining-view`: the last view, `seconds` or `weeks`
 - Google Fonts: Cormorant Garamond (names, quotes), Inter (UI), JetBrains Mono (numbers, labels)
-- PWA: `manifest.webmanifest` + `sw.js` (service worker; registers only over http/https, not `file://`)
 
 ## Structure
 | File | Purpose |
 |---|---|
-| `index.html` | Top bar (install / sound / share / calculate), `#timer` with Seconds and Weeks views, quote, CTA, toast, "calculate yours" modal with the place combobox |
+| `index.html` | Top bar (sound / share / calculate), `#timer` with Seconds and Weeks views, quote, CTA, toast, "calculate yours" modal with the place combobox |
 | `style.css` | Dark cosmic theme; color tokens on `:root`; animations; mobile rules; reduced-motion support |
-| `script.js` | Default profile, countdown loop, digit tick animation, bars, weeks grid, tab-title countdown, tick sound, share, install prompt, service-worker registration, quotes, modal, combobox, custom places, starfield |
+| `script.js` | Default profile, countdown loop, digit tick animation, bars, weeks grid, tab-title countdown, tick sound, share, old-service-worker cleanup, quotes, modal, combobox, custom places, starfield |
 | `data/life-expectancy.js` | `PLACES` array of `{ type, name, region, years }`: City / State / Country |
-| `manifest.webmanifest` | App name, colors and icons for "install as app" |
-| `sw.js` | Offline cache, stale-while-revalidate. **Bump `CACHE` when the file list changes.** |
-| `icons/` | `icon.svg` (favicon, hourglass), plus `icon-192.png` and `icon-512.png` (generated with a PowerShell System.Drawing script) |
+| `icons/icon.svg` | Browser-tab favicon (hourglass) |
 | `README.md` | Public project overview for GitHub: features, data sources, privacy, run locally, GitHub Pages deploy, structure. Keep it in sync when features or data sources change. |
 | `CLAUDE.md` | This document: project source of truth |
 
@@ -98,7 +95,7 @@ Gender/sex is deliberately **not** collected.
 - **"India"** is the UN figure (72.0). The SRS all-India figure for 2020–24 is 70.6.
 - **The meta line shows the source**, e.g. "Delhi · average life 73.9 yrs (SRS 2020–24) · …".
 - **Saved profiles** for built-in places are refreshed to the current figure on load (`loadProfile`).
-- **When updating data:** use the same sources' newer editions, update all entries of that category together, and bump `CACHE` in `sw.js`.
+- **When updating data:** use the same sources' newer editions, update all entries of that category together.
 
 ## Features
 1. **Seconds countdown**: a huge mono number; digits that change slide in with a gold flash.
@@ -117,7 +114,7 @@ Gender/sex is deliberately **not** collected.
 6. **Tab title countdown**: `document.title = "<seconds>s left · <name>"`, updated by `setInterval` (rAF stops in background tabs; browsers may slow it to once a minute after a while hidden).
 7. **Sound**: one speaker button in the top bar, simply **On / Off**. On plays **music + ticks** together, with a toast confirming.
    - Always starts Off and is never remembered. Browsers block autoplay anyway, and surprise sound on phones is unwelcome.
-   - **Music** (`startMusic` / `stopMusic`): generative cosmic ambience made live with Web Audio. There is no audio file, so no licensing or download, and it works offline. It keeps evolving instead of looping:
+   - **Music** (`startMusic` / `stopMusic`): generative cosmic ambience made live with Web Audio. There is no audio file, so no licensing or download. It keeps evolving instead of looping:
      - **Pads:** warm detuned-saw chords move through Fmaj9 → Am9 → Cmaj7 → Em7(add11), one every 14 s (`CHORDS`, `CHORD_SECONDS`).
        - each chord fades in over 6 s while the previous one fades out over 9 s
        - voices are spread across the stereo field
@@ -130,13 +127,7 @@ Gender/sex is deliberately **not** collected.
 8. **Share**: uses `navigator.share` where available, otherwise copies to the clipboard with a toast.
    - Text: "<Akash has | I have> N seconds left on this planet. How many do you have?" plus the page URL (only when served over http/https).
 9. **Daily question**: **removed** (2026-10-24, user request). Do not re-add it.
-10. **Install as app (PWA)**:
-    - the manifest, icons and service worker make it installable once hosted
-    - **The install button always shows on phones** (`pointer: coarse`) unless already running as the installed app (`display-mode: standalone` / `navigator.standalone`):
-      - Chromium (Chrome / Edge / Samsung on Android), which fires `beforeinstallprompt`: tapping shows the native install popup
-      - iPhone (any browser), Firefox and others with no install event: tapping opens the `#install-help` sheet with platform steps (iOS: Share → Add to Home Screen; Android: menu ⋮ → Install app / Add to Home screen)
-      - Desktop: the button shows only when `beforeinstallprompt` fires
-    - it works offline after the first visit
+10. **Install as app**: **removed** (2026-10-24, user decision; the site is opened by typing the link in the browser). There is no manifest, service worker, install button or how-to sheet. `script.js` keeps a small cleanup that unregisters any old service worker and deletes old `life-remaining*` caches from earlier visits. It can be deleted once old visitors have cleared (a few weeks). Do not re-add installing unless asked.
 11. **Rotating quotes**: Seneca, Marcus Aurelius and others, blurring in and out every 18 s. **Always visible on phone and desktop.**
 12. **Starfield background**: a canvas of slowly drifting, twinkling stars. Now and then one flares gold and fades out, like a life ending. There is also a breathing gold glow and a vignette.
 13. **Expired state**: if age ≥ average life, the digits turn gold at 0 and every week dot is filled.
@@ -173,7 +164,7 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - **Not verifiable headless:** the native share sheet and clipboard (no user activation), and service-worker caching. Check these on a real phone after hosting.
 
 ## Next
-- **Live:** https://akash9891.github.io/life-remaining/ (GitHub Pages, deploys automatically from `main`). The share button is confirmed working on the user's phone. Chrome's installability check on the live site passes (no errors).
+- **Live:** https://akash9891.github.io/life-remaining/ (GitHub Pages, deploys automatically from `main`). The share button is confirmed working on the user's phone.
 - Optional later: an OG image for nicer link previews, a new-tab browser extension.
 
 ## Status
@@ -186,8 +177,8 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - [x] v4: life in weeks, share, daily question, tab title countdown, tick sound, PWA
 - [x] v5: mobile-first rework
 - [x] Tested in headless Chrome (2026-10-24): see Testing
-- [x] Hosted on GitHub Pages; installability verified by Chrome on the live site
-- [ ] Offline mode: user to confirm on a real phone (airplane mode after first visit)
+- [x] Hosted on GitHub Pages
+- [x] Install-as-app removed (user uses the link in the browser)
 - [ ] Hosting on GitHub Pages
 
 ## Changelog
@@ -216,3 +207,4 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
 - 2026-10-24: Phones now show every detail desktop shows. Removed the rule that hid the unit line, years lived/left and the meta line under 640px tall (most real phones are below that with browser bars). Short phones (<700px) compact instead; sideways phones keep those details too (`html`-prefixed rules so they beat the desktop media query). Tested at 360×560, 390×600, 360×640, 390×664, 412×780, 844×390 and 1366×768 in both views: all details visible, all fit on one screen.
 - 2026-10-24: Code pushed to GitHub (https://github.com/akash9891/life-remaining, branch `main`). Added README.md (features, verified data sources, privacy, run/deploy steps, structure).
 - 2026-10-24: Deployed to GitHub Pages (https://akash9891.github.io/life-remaining/). The install button wasn't visible on the user's phone because only Chromium fires `beforeinstallprompt`. The button now always shows on phones (hidden once installed) and falls back to a how-to sheet (`#install-help`) with iPhone / Android steps. `sw.js` CACHE bumped to v3. Tested with iPhone, Android-Firefox, Android-Chrome and desktop emulation.
+- 2026-10-24: Install-as-app removed at the user's request (they open the link in the browser). Deleted `manifest.webmanifest`, `sw.js` and `icons/icon-192.png` / `icon-512.png`, plus the install button, the `#install-help` sheet and their styles. Added a cleanup that unregisters old service workers and deletes old caches for returning visitors. README updated. Tested on phone and desktop: no console messages, everything fits, workers removed.

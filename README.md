@@ -24,7 +24,6 @@ It's not a prediction, just a reminder that time is finite, so spend it on what 
 - **Optional sound:** a generative cosmic soundtrack with soft ticks, created live in the browser. Off by default.
 - **Share:** your countdown, through the phone's share sheet or the clipboard.
 - **Tab title countdown:** the browser tab shows the seconds left.
-- **Installable app (PWA):** add it to your home screen, and it works offline after the first visit.
 - **Mobile-first:** designed for phones and fits on one screen without scrolling. Also works on tablets and desktop.
 
 ## Life expectancy data
@@ -48,7 +47,7 @@ There's no backend, no account and no tracking. Your name, date of birth and pla
 It's plain HTML, CSS and JavaScript, with no build step and no dependencies.
 
 - **Simplest:** open `index.html` in a browser.
-- **Or serve it locally**, which install and offline mode need:
+- **Or serve it locally:**
 
   ```bash
   npx serve .
@@ -69,11 +68,9 @@ The site goes live at `https://<username>.github.io/life-remaining/` within a mi
 ```
 index.html               page markup: timer, weeks view, form
 style.css                mobile-first styles, animations
-script.js                countdown, weeks grid, form, sound, share, PWA
+script.js                countdown, weeks grid, form, sound, share
 data/life-expectancy.js  verified life-expectancy data + sources
-manifest.webmanifest     app name, colors, icons
-sw.js                    service worker (offline cache)
-icons/                   app icons (SVG + PNG)
+icons/icon.svg           browser-tab icon (hourglass)
 CLAUDE.md                detailed project notes and changelog
 ```
 
