@@ -38,6 +38,7 @@ It is a daily reminder that life is finite: hurry, and don't waste time on trivi
 | `manifest.webmanifest` | App name, colors and icons for "install as app" |
 | `sw.js` | Offline cache, stale-while-revalidate. **Bump `CACHE` when the file list changes.** |
 | `icons/` | `icon.svg` (favicon, hourglass), plus `icon-192.png` and `icon-512.png` (generated with a PowerShell System.Drawing script) |
+| `README.md` | Public project overview for GitHub: features, data sources, privacy, run locally, GitHub Pages deploy, structure. Keep it in sync when features or data sources change. |
 | `CLAUDE.md` | This document: project source of truth |
 
 ## Default Timer
@@ -209,3 +210,4 @@ How it was tested: headless Chrome driven over the DevTools protocol by a PowerS
   - share fallback (hidden-textarea copy) when the Clipboard API is blocked
 - 2026-10-24: Daily question removed entirely (HTML, CSS, `QUESTIONS`/`showQuestion`). Quotes now always shown on phone and desktop (removed the rules that hid them under 640px tall and in phone Weeks view). Re-tested on 8 sizes x 2 views: all fit on one screen.
 - 2026-10-24: Phones now show every detail desktop shows. Removed the rule that hid the unit line, years lived/left and the meta line under 640px tall (most real phones are below that with browser bars). Short phones (<700px) compact instead; sideways phones keep those details too (`html`-prefixed rules so they beat the desktop media query). Tested at 360×560, 390×600, 360×640, 390×664, 412×780, 844×390 and 1366×768 in both views: all details visible, all fit on one screen.
+- 2026-10-24: Code pushed to GitHub (https://github.com/akash9891/life-remaining, branch `main`). Added README.md (features, verified data sources, privacy, run/deploy steps, structure).
