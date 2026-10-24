@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Life Remaining</title>
+  <meta name="description" content="We die. Live now. A countdown of the seconds of life you have left.">
+  <meta name="theme-color" content="#05060a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <span class="brand"><span class="brand-dot"></span>We die · Live now</span>
+    <div class="top-actions">
+      <button class="icon-btn" id="install" type="button" title="Install as app" aria-label="Install as app" hidden>
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-btn" id="sound" type="button" title="Sound (music + ticks)" aria-label="Sound off" aria-pressed="false">
+        <svg class="ic-off" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M17 9l4 6m0-6l-4 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="ic-on" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" id="share" type="button" title="Share" aria-label="Share">
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4l4 4M6 12v6a2 2 0 002 2h8a2 2 0 002-2v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-ghost" id="open-top" type="button">Calculate yours</button>
+    </div>
+  </header>
+
+  <main id="timer" class="timer">
+    <div class="who">
+      <p class="eyebrow">Life remaining of</p>
+      <h1 class="name" id="name"></h1>
+      <div class="view-toggle" role="tablist" aria-label="View">
+        <button type="button" role="tab" data-view="seconds" aria-selected="true">Seconds</button>
+        <button type="button" role="tab" data-view="weeks" aria-selected="false">Weeks</button>
+      </div>
+    </div>
+
+    <!-- Seconds view -->
+    <div class="view" id="view-seconds">
+      <div class="count">
+        <div class="digits" id="digits" aria-label="Seconds remaining"></div>
+        <p class="unit">seconds left on this planet</p>
+      </div>
+
+      <div class="breakdown" id="breakdown">
+        <div class="cell"><b data-k="y">0</b><span>years</span></div>
+        <div class="cell"><b data-k="d">0</b><span>days</span></div>
+        <div class="cell"><b data-k="h">00</b><span>hours</span></div>
+        <div class="cell"><b data-k="m">00</b><span>minutes</span></div>
+        <div class="cell"><b data-k="s">00</b><span>seconds</span></div>
+      </div>
+
+      <section class="bars">
+        <div class="bar-head">
+          <span class="bar-title">Life</span>
+          <span class="bar-pct" id="life-pct"></span>
+        </div>
+        <div class="bar life"><div class="fill" id="life-fill"><i class="ember"></i></div></div>
+        <div class="bar-foot">
+          <span><b id="lived"></b> years lived</span>
+          <span><b id="left"></b> years left</span>
+        </div>
+
+        <div class="bar-head small">
+          <span class="bar-title">Today</span>
+          <span class="bar-pct" id="day-pct"></span>
+        </div>
+        <div class="bar day"><div class="fill" id="day-fill"><i class="ember"></i></div></div>
+      </section>
+    </div>
+
+    <!-- Life in weeks view -->
+    <div class="view view-weeks" id="view-weeks" hidden>
+      <div class="weeks-wrap" id="weeks-wrap">
+        <canvas id="weeks" aria-label="Life in weeks grid"></canvas>
+        <span class="now-dot" id="now-dot" aria-hidden="true"></span>
+      </div>
+      <p class="weeks-caption" id="weeks-caption"></p>
+    </div>
+
+
+    <blockquote class="quote" id="quote"></blockquote>
+
+    <section class="cta" id="cta">
+      <p class="cta-text"><span id="cta-kicker"></span> <strong id="cta-title"></strong></p>
+      <div class="cta-actions">
+        <button class="btn-primary" id="open-cta" type="button">
+          Calculate your life <span aria-hidden="true">→</span>
+        </button>
+        <button class="btn-link" id="reset" type="button" hidden>Back to default</button>
+      </div>
+    </section>
+
+    <p class="meta" id="meta"></p>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Calculate-yours modal -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="card-close" type="button" data-close aria-label="Close">×</button>
+      <p class="eyebrow">We die · Live now</p>
+      <h2 class="card-title" id="modal-title">How much time do you have?</h2>
+
+      <form id="form" autocomplete="off" novalidate>
+        <label class="field">
+          <span>Name</span>
+          <input id="in-name" type="text" maxlength="40" placeholder="Your name">
+        </label>
+
+        <label class="field">
+          <span>Date of birth</span>
+          <input id="in-dob" type="date" min="1900-01-01">
+        </label>
+
+        <div class="field">
+          <span id="place-label">Place</span>
+          <div class="combo" id="combo">
+            <button type="button" class="combo-trigger" id="combo-trigger"
+                    aria-haspopup="listbox" aria-expanded="false" aria-labelledby="place-label combo-value">
+              <span class="combo-value placeholder" id="combo-value">Select country, state or city</span>
+              <span class="pill" id="combo-years" hidden></span>
+              <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+
+            <div class="combo-panel" id="combo-panel" hidden>
+              <div class="combo-search">
+                <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="1.6"/></svg>
+                <input id="combo-search" type="text" placeholder="Search…" aria-controls="combo-list">
+                <span class="combo-count" id="combo-count"></span>
+              </div>
+              <ul class="combo-list" id="combo-list" role="listbox"></ul>
+              <div class="combo-add" id="combo-add" hidden>
+                <p>Average life in <b id="add-name"></b></p>
+                <div class="add-row">
+                  <input id="add-years" type="number" step="0.1" min="20" max="120" placeholder="e.g. 72.5">
+                  <span class="add-unit">years</span>
+                  <button type="button" id="add-confirm">Add place</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="error" id="form-error" aria-live="polite"></p>
+        <button type="submit" class="btn-primary wide">Start my countdown</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="data/life-expectancy.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
